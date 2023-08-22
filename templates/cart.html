@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- book section -->
+  <section class="book_section layout_padding">
+    <div class="">
+
+        <div class="row px-xl-5">
+            <div class="col-lg-8 table-responsive mb-5">
+
+                {% if cart.products %}
+                {% for product in cart.products.all %}
+                {% with product as item %}
+                <div class="card p-3">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-1">
+                            <img src="{{item.product.image.url}}" alt="" style="width: 50px;">
+                        </div>
+                        <div class="col-sm-12 col-lg-3">
+                            {{item.product.name}}
+                        </div>
+                        <div class="col-sm-12 col-lg-2">
+                            {{item.product.price}} ming
+                        </div>
+                        <div class="col-sm-12 col-lg-2">
+                            {{item.quantity}} ta
+                        </div>
+                        <div class="col-sm-12 col-lg-2">
+                            {{item.price}} ming
+                        </div>
+                        <div class="col-sm-12 col-lg-2">
+                            <a href="{% url 'main:delete' item.product.id item.quantity %}" class="btn btn-sm btn-warning"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                {% endwith %}
+                {% endfor %}
+                {% else %}
+                Savatcha bo'sh
+                {% endif %}
+
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-secondary mb-5">
+                    <div class="card-header bg-secondary border-0">
+                        <h4 class="font-weight-semi-bold m-0 text-white">Savatcha</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="font-weight-bold">Umumiy narxi</h6>
+                            <h6 class="font-weight-bold">{{ cart.total_price }} ming</h6>
+                        </div>
+                    </div>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <div class="d-flex justify-content-between mt-2">
+                            <h5 class="font-weight-medium">Barchasi</h5>
+                            <h5 class="font-weight-medium">{{ cart.total_quantity }} ta</h5>
+                        </div>
+                        <a href="{% url 'main:checkout' %}" class="btn btn-block btn-warning mt-4">Buyurtma qilish</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+  </section>
+  <!-- end book section -->
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <!-- food section -->
+
+  <section class="food_section layout_padding-bottom">
+    <div class="container">
+      <div class="heading_container heading_center">
+        <h2>
+          Bizning menyu
+        </h2>
+      </div>
+
+      <ul class="filters_menu">
+        <li class="active" data-filter="*">All</li>
+      {% for x in categorys %}  
+        <li data-filter=".{{x.slug}}">{{x.title}}</li>
+      {% endfor %}
+      </ul>
+
+      <div class="filters-content">
+        <div class="row grid">
+          {% for product in all_products %}
+          <div class="col-sm-6 col-lg-4 all {{product.category.slug}}">
+            <div class="box">
+              <div>
+                <div class="img-box">
+                  <img src="{{product.image.url}}" alt="">
+                </div>
+                <div class="detail-box">
+                  <h5>
+                  {{product.name}}
+                  </h5>
+                  <p>
+                  {{product.description}}
+                  </p>
+                  <div class="options">
+                    <h6>
+                    {{product.price}} ming
+                    </h6>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
+                      <button type="button" class="btn increment bg-warning">+</button>
+                      <input type="number" class="product_inp qtyresult{{product.id}}" value="1" min="1">
+                      <button type="button" class="btn decrement bg-warning">-</button>
+                    </div>
+
+                  <a href="#" onclick="AddToCart({{product.id}})">
+                    <img src="{% static 'images/shopping-cart.png' %}" alt="" width="45">
+                  </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+
+    <script>
+        function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = cookies[i].trim();
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+      
+        function AddToCart(product_id){
+          let csrftoken =  getCookie('csrftoken');
+          // console.log(document.cookie)
+          let qty = Number(document.querySelector(`.qtyresult${product_id}`).value)
+          console.log(qty)
+      
+          fetch("/menu/add/", {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              "X-CSRFToken": csrftoken
+            },
+            method: 'POST',
+            //make sure to serialize your JSON body
+            body: JSON.stringify({
+              product_id: product_id,
+              qty: qty
+            })
+          })
+          .then(data => {
+            if(data.status == "added"){
+              alert("Tovar qoshildi")
+            }else{
+              alert("Tovar uje savatchada")
+            }
+          }) 
+        }
+        
+      
+      
+      </script>
+      
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end food section -->
+{% endblock %}
